@@ -42,52 +42,58 @@ class _ALPRState extends State<ALPR> {
           ),
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(15)),
-            width: 300,
-            height: 300,
-            child: Center(
-                child: _image == null
-                    ? Text("No image selected")
-                    : Image.file(
-                        _image,
-                        fit: BoxFit.cover,
-                      )),
-          ),
-          SizedBox(
-            height: 40,
-          ),
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                RaisedButton(
-                  child: Text("Get Plate Number "),
-                  onPressed: () {
-                    if (_imageBase64 != null) {
-                      var plateNumber = plateRecogniser(_imageBase64);
-                      setState(() {
-                        results = plateNumber;
-                        print(results);
-                      });
-                    }
-                  },
-                ),
-                Container(
-                  child: Text(results == null ? "" : results),
-                )
-              ],
+      body: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              height: 20,
             ),
-          ),
-        ],
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(15)),
+              width: 300,
+              height: 300,
+              child: Center(
+                  child: _image == null
+                      ? Text("No image selected")
+                      : Image.file(
+                          _image,
+                          fit: BoxFit.cover,
+                        )),
+            ),
+            SizedBox(
+              height: 40,
+            ),
+            Container(
+              child: RaisedButton(
+                child: Text(
+                  "Get Plate Number ",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+                onPressed: () async {
+                  if (_imageBase64 != null) {
+                    var plateNumber = await plateRecogniser(_imageBase64);
+                    results = plateNumber;
+                    setState(() {
+                      print(plateNumber.toString());
+                    });
+                  }
+                },
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              child: Text(
+                results == null ? "" : results,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+            )
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
