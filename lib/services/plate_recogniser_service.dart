@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
-import
+import 'dart:convert' as convert;
 
-String plateRecogniser(Image image) {
+import 'package:alpr_x/models/plate_model.dart';
+import 'package:http/http.dart' as http;
+
+Future<String> plateRecogniser(String imageBase64) async {
   var response = await http
       .post("https://api.platerecognizer.com/v1/plate-reader/", body: {
     "upload": imageBase64
@@ -10,7 +12,6 @@ String plateRecogniser(Image image) {
   });
 
   var json = convert.jsonDecode(response.body);
-
-  PlateNumberModel plateModel = new PlateNumberModel();
-  var results = PlateNumberModel.fromMap(json["results"]["plate"]);
+  var results = PlateNumberModel.fromMap(json["results"]["plate"]).toString();
+  return results;
 }
