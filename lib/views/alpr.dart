@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:alpr_x/services/plate_recogniser_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -12,7 +13,7 @@ class ALPR extends StatefulWidget {
 class _ALPRState extends State<ALPR> {
   File _image;
   final String API_TOKEN = 'Token 5fd073409dd7239a9d071e7b4f292744c1abe267';
-  String results;
+  var results;
   String _imageBase64;
   final _picker = ImagePicker();
 
@@ -26,42 +27,24 @@ class _ALPRState extends State<ALPR> {
       _image = _image;
       _imageBase64 = imageBase64;
     });
-    return imageBase64;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0.0,
         title: Center(
-          child: Text("Licence Plate recognizer"),
+          child: Text(
+            "Licence Plate recognizer",
+            style: TextStyle(color: Colors.blue),
+          ),
         ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          SizedBox(
-            height: 20,
-          ),
-          Center(
-            child: Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15), color: Colors.blue),
-              child: Center(
-                child: Text(
-                  'Automatic License Plate Number Recogniser',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-              width: 310,
-            ),
-          ),
           SizedBox(
             height: 20,
           ),
@@ -74,26 +57,35 @@ class _ALPRState extends State<ALPR> {
             child: Center(
                 child: _image == null
                     ? Text("No image selected")
-                    : Image.file(_image)),
+                    : Image.file(
+                        _image,
+                        fit: BoxFit.cover,
+                      )),
           ),
           SizedBox(
             height: 40,
           ),
           Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15), color: Colors.blue),
-            child: Center(
-              child: Text(
-                "platenumber Appears here...",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontFamily: 'Montserrat'),
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                RaisedButton(
+                  child: Text("Get Plate Number "),
+                  onPressed: () {
+                    if (_imageBase64 != null) {
+                      var plateNumber = plateRecogniser(_imageBase64);
+                      setState(() {
+                        results = plateNumber;
+                        print(results);
+                      });
+                    }
+                  },
+                ),
+                Container(
+                  child: Text(results == null ? "" : results),
+                )
+              ],
             ),
-            height: 80,
-            width: 350,
           ),
         ],
       ),

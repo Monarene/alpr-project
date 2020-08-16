@@ -11,7 +11,7 @@ Future<String> plateRecogniser(String imageBase64) async {
     "Authorization": "Token 5fd073409dd7239a9d071e7b4f292744c1abe267"
   });
 
-  var json = convert.jsonDecode(response.body);
-  var results = PlateNumberModel.fromMap(json["results"]["plate"]).toString();
-  return results;
+  var json = await convert.jsonDecode(response.body);
+  var results = PlateNumberModel.fromMap(json["results"][0]);
+  return results.plateNumber;
 }
